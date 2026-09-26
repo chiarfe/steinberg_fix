@@ -19,7 +19,8 @@ This repository contains the necessary winetricks to run some of Steinberg's sof
 1. **Set up a Wine prefix** as usual.
 2. **Install the verb** (or the general fixsteinberg for all apps):
    ```bash
-   winetricks https://raw.githubusercontent.com/chiarfe/steinberg_fix/main/fixsteinberg.verb
+   wget https://raw.githubusercontent.com/chiarfe/steinberg_fix/refs/heads/main/fixdorico.verb
+   winetricks fixdorico.verb
    ```
 3. **Install Steinberg Download Assistant**.
 4. **Perform authentication** and download your app of interest along with its dependencies.

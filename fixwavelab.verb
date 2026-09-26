@@ -5,8 +5,6 @@ w_metadata fixwavelab dlls \
 
 load_fixwavelab()
 {
-    ROOT_URL="https://raw.githubusercontent.com/chiarfe/steinberg_fix/main"
-
     # Existing winetricks
     w_set_unattended 1
     w_call corefonts

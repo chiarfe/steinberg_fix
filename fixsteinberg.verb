@@ -5,7 +5,7 @@ w_metadata fixsteinberg dlls \
 
 load_fixsteinberg()
 {
-    ROOT_URL="https://raw.githubusercontent.com/chiarfe/steinberg_fix/main"
+    ROOT_URL="https://raw.githubusercontent.com/chiarfe/steinberg_fix/refs/heads/main"
 
     # Existing winetricks
     w_set_unattended 1
@@ -15,7 +15,10 @@ load_fixsteinberg()
     w_call dotnet48
     w_call win11
     
-    # Custom winetricks
-    w_call ${ROOT_URL}/dcomp/dcomp.verb
-    w_call ${ROOT_URL}/pwrshsip/pwrshsip.verb
+    for verb in dcomp pwrshsip
+    do
+        w_download_to "${W_CACHE}/${W_PACKAGE}" "${ROOT_URL}/${verb}/${verb}.verb"
+        source "${W_CACHE}/${W_PACKAGE}/${verb}.verb"
+        w_call ${verb}
+    done
 }

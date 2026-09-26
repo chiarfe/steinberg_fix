@@ -17,7 +17,7 @@ load_pwrshsip()
         "${W_CACHE}/${W_PACKAGE}/i386-windows" \
         "${ROOT_URL}/binaries/i386-windows/pwrshsip.dll"
     cp "${W_CACHE}/${W_PACKAGE}/i386-windows/pwrshsip.dll" \
-       "${W_SYSTEM_DLLS}/pwrshsip.dll"
+       "${W_SYSTEM32_DLLS}/pwrshsip.dll"
 
     # Register pwrshsip
     w_override_dlls native pwrshsip

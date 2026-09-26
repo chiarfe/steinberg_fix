@@ -1,0 +1,25 @@
+w_metadata pwrshsip dlls \
+    title="Make pwrshsip available in wine" \
+    publisher="chiarfe" \
+    year="2026"
+
+load_pwrshsip()
+{
+    ROOT_URL="https://raw.githubusercontent.com/chiarfe/steinberg_fix/main/pwrshsip"
+
+    w_download_to \
+        "${W_CACHE}/${W_PACKAGE}/x86_64-windows" \
+        "${ROOT_URL}/binaries/x86_64-windows/pwrshsip.dll"
+    cp "${W_CACHE}/${W_PACKAGE}/x86_64-windows/pwrshsip.dll" \
+       "${W_SYSTEM64_DLLS}/pwrshsip.dll"
+
+    w_download_to \
+        "${W_CACHE}/${W_PACKAGE}/i386-windows" \
+        "${ROOT_URL}/binaries/i386-windows/pwrshsip.dll"
+    cp "${W_CACHE}/${W_PACKAGE}/i386-windows/pwrshsip.dll" \
+       "${W_SYSTEM_DLLS}/pwrshsip.dll"
+
+    # Register pwrshsip
+    w_override_dlls native pwrshsip
+    w_try "$WINE" rundll32 pwrshsip.dll,DllRegisterServer
+}

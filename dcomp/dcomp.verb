@@ -1,0 +1,23 @@
+w_metadata dcomp dlls \
+    title="Replaces dcomp with Zhiyi Zhang's implementation from branch bug-23698-react-native, ported to native" \
+    publisher="chiarfe" \
+    year="2026"
+
+load_dcomp()
+{
+    ROOT_URL="https://raw.githubusercontent.com/chiarfe/steinberg_fix/main/dcomp"
+
+    w_download_to \
+        "${W_CACHE}/${W_PACKAGE}/x86_64-windows" \
+        "${ROOT_URL}/binaries/x86_64-windows/dcomp.dll"
+    cp "${W_CACHE}/${W_PACKAGE}/x86_64-windows/dcomp.dll" \
+       "${W_SYSTEM64_DLLS}/dcomp.dll"
+
+    w_download_to \
+        "${W_CACHE}/${W_PACKAGE}/i386-windows" \
+        "${ROOT_URL}/binaries/i386-windows/dcomp.dll"
+    cp "${W_CACHE}/${W_PACKAGE}/i386-windows/dcomp.dll" \
+       "${W_SYSTEM_DLLS}/dcomp.dll"
+
+    w_override_dlls native,builtin dcomp
+}

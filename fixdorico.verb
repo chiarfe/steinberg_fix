@@ -1,0 +1,21 @@
+w_metadata fixdorico dlls \
+    title="Fixes for running Steinberg's Dorico under Wine" \
+    publisher="chiarfe" \
+    year="2026"
+
+load_fixdorico()
+{
+    ROOT_URL="https://raw.githubusercontent.com/chiarfe/steinberg_fix/main"
+
+    # Existing winetricks
+    w_set_unattended 1
+    w_call corefonts
+    w_call fontsmooth=rgb
+    w_call vcrun2022
+    w_call dotnet48
+    w_call win11
+    
+    # Custom winetricks
+    w_call ${ROOT_URL}/dcomp/dcomp.verb
+    w_call ${ROOT_URL}/pwrshsip/pwrshsip.verb
+}

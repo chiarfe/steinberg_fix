@@ -3,22 +3,25 @@ w_metadata fixdorico dlls \
     publisher="chiarfe" \
     year="2026"
 
+ROOT_URL="https://raw.githubusercontent.com/chiarfe/steinberg_fix/refs/heads/main"
+
+for _fix_verb in dcomp pwrshsip
+do
+    winetricks_metadata_exists "${_fix_verb}" && continue
+    w_download_to "${W_CACHE}/steinberg_fix" "${ROOT_URL}/${_fix_verb}/${_fix_verb}.verb"
+    source "${W_CACHE}/steinberg_fix/${_fix_verb}.verb"
+done
+unset _fix_verb
+
 load_fixdorico()
 {
-    ROOT_URL="https://raw.githubusercontent.com/chiarfe/steinberg_fix/refs/heads/main"
-
-    # Existing winetricks
     w_set_unattended 1
     w_call corefonts
     w_call fontsmooth=rgb
     w_call vcrun2022
     w_call dotnet48
     w_call win11
-    
-    for verb in dcomp pwrshsip
-    do
-        w_download_to "${W_CACHE}/${W_PACKAGE}" "${ROOT_URL}/${verb}/${verb}.verb"
-        source "${W_CACHE}/${W_PACKAGE}/${verb}.verb"
-        w_call ${verb}
-    done
+
+    w_call dcomp
+    w_call pwrshsip
 }

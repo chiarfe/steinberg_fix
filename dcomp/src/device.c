@@ -113,6 +113,7 @@ static ULONG STDMETHODCALLTYPE device_Release(IDCompositionDevice *iface)
     {
         if (device->thread)
         {
+            device->exit_thread = TRUE;
             WaitForSingleObject(device->thread, INFINITE);
             CloseHandle(device->thread);
         }

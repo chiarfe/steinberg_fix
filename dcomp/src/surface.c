@@ -391,13 +391,6 @@ static HRESULT STDMETHODCALLTYPE surface_Unknown3(IDCompositionSurfaceUnknown *i
         return S_OK;
     }
 
-    IUnknown_Release(surface->physical_surface);
-    if (surface->draw_surface)
-    {
-        ID3D11Texture2D_Release(surface->draw_surface);
-        surface->draw_surface = NULL;
-    }
-
     desc.Width = max(width, 1);
     desc.Height = max(height, 1);
     desc.Format = surface->pixel_format;
@@ -410,6 +403,15 @@ static HRESULT STDMETHODCALLTYPE surface_Unknown3(IDCompositionSurfaceUnknown *i
         dcomp_unlock();
         ERR("Failed to create a IDXGISurface.\n");
         return hr;
+    }
+
+    /* Only drop the old surfaces once the new one exists, so a failure leaves the
+     * surface usable at its previous size. */
+    IUnknown_Release(surface->physical_surface);
+    if (surface->draw_surface)
+    {
+        ID3D11Texture2D_Release(surface->draw_surface);
+        surface->draw_surface = NULL;
     }
 
     surface->width = width;

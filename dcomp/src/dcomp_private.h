@@ -43,6 +43,9 @@ struct composition_surface_factory
     IDCompositionDevice *device;
     IUnknown *rendering_device;
     GUID rendering_device_iid;
+    /* DXGI device backing the rendering device (the device itself, or the one
+     * underlying an ID2D1Device). Used to create and copy surfaces. */
+    IDXGIDevice *dxgi_device;
     LONG ref;
 };
 
@@ -51,6 +54,8 @@ struct composition_surface
     IDCompositionSurfaceUnknown IDCompositionSurfaceUnknown_iface;
     IDCompositionSurfaceFactory *factory;
     ID3D11Texture2D *draw_surface;
+    ID2D1DeviceContext *d2d_context; /* set between BeginDraw(ID2D1DeviceContext) and EndDraw */
+    BOOL is_virtual;
     RECT draw_rect;
     IUnknown *physical_surface;
     GUID physical_surface_iid;

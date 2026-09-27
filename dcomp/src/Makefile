@@ -20,6 +20,12 @@ CFLAGS  = \
     -Wall -Wno-unused-parameter \
     -O2
 
+# Build with `make DEBUG=1` to enable TRACE/FIXME/WARN/ERR output via
+# OutputDebugStringA (view with WINEDEBUG=+debugstr).
+ifdef DEBUG
+CFLAGS += -DDCOMP_DEBUG -g
+endif
+
 # ----- Build directories -----------------------------------------------------
 BUILD_DIR     = build
 BUILD_DIR_X64 = $(BUILD_DIR)/x64

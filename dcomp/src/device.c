@@ -799,10 +799,13 @@ static HRESULT STDMETHODCALLTYPE device_CreateTargetForHwnd(IDCompositionDevice 
         HWND hwnd, BOOL topmost, IDCompositionTarget **target)
 {
     struct composition_device *device = impl_from_IDCompositionDevice(iface);
+    HRESULT hr;
 
     TRACE("iface %p, hwnd %p, topmost %d, target %p\n", iface, hwnd, topmost, target);
 
-    return create_target(device, hwnd, topmost, target);
+    if (FAILED(hr = create_target(device, hwnd, topmost, target)))
+        WARN("Failed to create a target for hwnd %p, hr %#lx.\n", hwnd, hr);
+    return hr;
 }
 
 static HRESULT STDMETHODCALLTYPE device_CreateVisual(IDCompositionDevice *iface,
@@ -2017,6 +2020,16 @@ HRESULT WINAPI DCompositionCreateDevice(IDXGIDevice *dxgi_device, REFIID iid, vo
 
     if (!IsEqualIID(iid, &IID_IDCompositionDevice))
         return E_NOINTERFACE;
+
+    /* Qt's D3D11 backend creates a device without a rendering device for translucent
+     * windows, then needs IDXGIFactory2::CreateSwapChainForComposition, which DXVK does
+     * not implement, and leaves the window half composed (popups turn white after the
+     * first time they are shown). Failing here makes Qt use a plain HWND swapchain. */
+    if (!dxgi_device)
+    {
+        WARN("Rejecting device creation without a rendering device.\n");
+        return E_NOTIMPL;
+    }
 
     return create_device(1, iid, device);
 }

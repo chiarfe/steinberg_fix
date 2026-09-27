@@ -205,14 +205,15 @@ static HRESULT STDMETHODCALLTYPE surface_BeginDraw(IDCompositionSurfaceUnknown *
             ID3D11Texture2D_Release(draw_surface);
     }
 
+    /* On success the lock stays held until EndDraw, so that the composition thread,
+     * which uses the same immediate context, can't run while the surface is drawn. */
     dcomp_lock();
-    if (device->drawing_surface && device->drawing_surface != &surface->IDCompositionSurfaceUnknown_iface)
+    if (device->drawing_surface)
     {
         dcomp_unlock();
         return DCOMPOSITION_ERROR_SURFACE_BEING_RENDERED;
     }
     device->drawing_surface = &surface->IDCompositionSurfaceUnknown_iface;
-    dcomp_unlock();
 
     if (IsEqualGUID(iid, &IID_ID2D1DeviceContext))
     {
@@ -230,7 +231,6 @@ static HRESULT STDMETHODCALLTYPE surface_BeginDraw(IDCompositionSurfaceUnknown *
     }
     if (FAILED(hr))
     {
-        dcomp_lock();
         device->drawing_surface = NULL;
         dcomp_unlock();
         return hr;
@@ -242,27 +242,15 @@ static HRESULT STDMETHODCALLTYPE surface_BeginDraw(IDCompositionSurfaceUnknown *
     return S_OK;
 }
 
-static HRESULT STDMETHODCALLTYPE surface_EndDraw(IDCompositionSurfaceUnknown *iface)
+/* Called with the dcomp lock held. */
+static HRESULT end_draw(struct composition_surface *surface)
 {
-    struct composition_surface *surface = impl_from_IDCompositionSurfaceUnknown(iface);
     struct composition_surface_factory *factory = impl_from_IDCompositionSurfaceFactory(surface->factory);
-    struct composition_device *device = impl_from_IDCompositionDevice(factory->device);
     ID3D11Resource *dst_resource, *src_resource;
     ID3D11DeviceContext *d3d11_device_context;
     ID3D11Device *d3d11_device;
     D3D11_BOX box;
     HRESULT hr;
-
-    TRACE("iface %p.\n", iface);
-
-    dcomp_lock();
-    if (!(device->drawing_surface && device->drawing_surface == &surface->IDCompositionSurfaceUnknown_iface))
-    {
-        dcomp_unlock();
-        return DCOMPOSITION_ERROR_SURFACE_NOT_BEING_RENDERED;
-    }
-    device->drawing_surface = NULL;
-    dcomp_unlock();
 
     if (surface->d2d_context)
     {
@@ -316,6 +304,31 @@ static HRESULT STDMETHODCALLTYPE surface_EndDraw(IDCompositionSurfaceUnknown *if
 
     SetRectEmpty(&surface->draw_rect);
     return S_OK;
+}
+
+static HRESULT STDMETHODCALLTYPE surface_EndDraw(IDCompositionSurfaceUnknown *iface)
+{
+    struct composition_surface *surface = impl_from_IDCompositionSurfaceUnknown(iface);
+    struct composition_surface_factory *factory = impl_from_IDCompositionSurfaceFactory(surface->factory);
+    struct composition_device *device = impl_from_IDCompositionDevice(factory->device);
+    HRESULT hr;
+
+    TRACE("iface %p.\n", iface);
+
+    dcomp_lock();
+    if (!(device->drawing_surface && device->drawing_surface == &surface->IDCompositionSurfaceUnknown_iface))
+    {
+        dcomp_unlock();
+        return DCOMPOSITION_ERROR_SURFACE_NOT_BEING_RENDERED;
+    }
+    device->drawing_surface = NULL;
+
+    hr = end_draw(surface);
+
+    dcomp_unlock();
+    /* Release the lock held since BeginDraw. */
+    dcomp_unlock();
+    return hr;
 }
 
 static HRESULT STDMETHODCALLTYPE surface_SuspendDraw(IDCompositionSurfaceUnknown *iface)

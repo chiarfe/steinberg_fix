@@ -1,6 +1,7 @@
 # Winetricks for Running Steinberg Software under Wine
 
-This repository contains the necessary winetricks to run some of Steinberg's software under Wine.
+This repository contains the necessary winetricks to run some of Steinberg's software under Wine.  
+If you find any issues in programs marked as "working", please let me know and I'll do my best to fix them.
 
 ---
 
@@ -8,47 +9,43 @@ This repository contains the necessary winetricks to run some of Steinberg's sof
 
 | Software       | Status         | Notes |
 |----------------|----------------|-------|
-| **Dorico 6**   | ✅ Edit, engrave, print features working | ❌ Playback not working |
+| **Dorico 6**   | ✅ Everything works with no issues | |
 | **WaveLab 14** | ✅ Everything works with no issues | |
-| **Cubase 15**  | ❌ Does not install nor work | |
+| **Cubase 15**  | ❌ Does not install nor work | (WIP) |
 
 ---
 
 ## 📝 Steps to Use
 
 1. **Set up a Wine prefix** as usual.
-2. **Install the verb** (or the general fixsteinberg for all apps):
+2. **Install the verb**:
    ```bash
-   wget https://raw.githubusercontent.com/chiarfe/steinberg_fix/refs/heads/main/fixdorico.verb
-   winetricks fixdorico.verb
+   wget https://raw.githubusercontent.com/chiarfe/steinberg_fix/refs/heads/main/fixsteinberg.verb
+   winetricks fixsteinberg.verb
    ```
-3. **Install Steinberg Download Assistant**.
+3. **Install Steinberg Download Assistant** and authenticate.
 4. **Perform authentication** and download your app of interest along with its dependencies.
 5. **Start the app** and authenticate.
 
 ---
 
-## 🛠️ Troubleshooting
+## 🛠️ Issues
 
 ### Dorico
-- **App is stuck**:  
-  As of now, enabling playback causes the app to freeze.  
-  ✅ **Solution**: Disable project playback before opening any file and avoid using playback for now.
-
-- **Dropdowns appear blank**:  
-  As of now, dropdowns may appear blank after their first use.  
-  ✅ **Solution**: Try to guess the position of the entries you want to press, since the click action works even if you see nothing.
+- ~~App gets stuck in play view~~
+- ~~Dropdowns appear blank~~
+- No know issues.
 
 
 ### Wavelab
 - No know issues.
 
 ### Cubase
-- ❌ Not working at all as of now
+- ❌ Not working at all as of now (WIP)
 
 ---
 
-# Tehnical information
+# 🛠️ Tehnical information
 
 - **COMMON**: all verbs install some common tricks for commonly used components, such as fonts, VC++, .NET
 - **DCOMP**: this is a simple stub direct composition implementation, which is required to prevent programs crashes

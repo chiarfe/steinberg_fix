@@ -16,12 +16,21 @@ unset _fix_verb
 load_fixsteinberg()
 {
     w_set_unattended 1
+
+    # Install fonts packages
     w_call corefonts
     w_call fontsmooth=rgb
+
+    # Replace "Segoe UI" with a more similar font than default "Arial"
+    w_try reg add "HKCU\\Software\\Wine\\Fonts\\Replacements" \
+        /v "Segoe UI" /t REG_MULTI_SZ /d "Noto Sans\0DejaVu Sans\0Liberation Sans" /f
+
+    # Install common required packages
     w_call vcrun2022
     w_call dotnet48
     w_call win11
 
+    # Install custom fixes
     w_call dcomp
     w_call pwrshsip
 }

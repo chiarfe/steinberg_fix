@@ -1,7 +1,9 @@
 # Winetricks for Running Steinberg Software under Wine
 
 This repository contains the necessary winetricks to run some of Steinberg's software under Wine.  
-If you find any issues in programs marked as "working", please let me know and I'll do my best to fix them.
+If you find any issues in programs marked as "no issues", please let me know and I'll do my best to fix them.  
+
+This winetricks should work with any wine version >= 11.0. It does not require wine to be rebuilt and should work with any system builtin or downloaded wine.
 
 ---
 
@@ -41,7 +43,9 @@ If you find any issues in programs marked as "working", please let me know and I
 - No know issues.
 
 ### Cubase
-- ❌ Not working at all as of now (WIP)
+- ~~Does not install~~
+- ✅ Crash on start [Cubase Pro tries to load headtracking.dll, which requires Windows VR components which Wine does not provide. Can be fixed by removing that dll]
+- ❌ Crash immediately after opening a project [seems to be a bug related to Wine's d2d1, I'll wait some time for a mainline fix]
 
 ---
 

@@ -28,6 +28,8 @@ load_fixsteinberg()
     # Install common required packages
     w_call vcrun2022
     w_call dotnet48
+    w_call dxvk
+    w_call vkd3d
     w_call win11
 
     # Install custom fixes

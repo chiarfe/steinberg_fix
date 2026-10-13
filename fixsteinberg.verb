@@ -22,7 +22,7 @@ load_fixsteinberg()
     w_call fontsmooth=rgb
 
     # Replace "Segoe UI" with a more similar font than default "Arial"
-    w_try reg add "HKCU\\Software\\Wine\\Fonts\\Replacements" \
+    w_try "${WINE}" reg add "HKCU\\Software\\Wine\\Fonts\\Replacements" \
         /v "Segoe UI" /t REG_MULTI_SZ /d "Noto Sans\0DejaVu Sans\0Liberation Sans" /f
 
     # Install common required packages

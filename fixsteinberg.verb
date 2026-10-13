@@ -15,7 +15,7 @@ unset _fix_verb
 
 load_fixsteinberg()
 {
-    w_set_unattended 1
+    winetricks_set_unattended 1
 
     # Install fonts packages
     w_call corefonts
